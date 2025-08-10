@@ -1,5 +1,23 @@
 from rest_framework import serializers
 from .models import Family, Member, Event, Registration, Donation, Communication, CustomUser
+from django.contrib.auth import get_user_model  
+
+
+User = get_user_model()
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username', 'password', 'is_member', 'is_admin')
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 
 # ==== Family Serializer ====

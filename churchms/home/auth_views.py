@@ -28,3 +28,4 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 # Login view is handled by SimpleJWT (TokenObtainPairView)
+

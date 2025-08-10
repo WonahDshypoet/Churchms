@@ -72,7 +72,15 @@ class Communication(models.Model):
     def __str__(self):
         return f"{self.channel} to {self.member}"
 
+
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     is_member = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']  # username still required by AbstractUser
+
+    def __str__(self):
+        return self.email
     
