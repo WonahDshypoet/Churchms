@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-for-local-use-only')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://churchms-49i6.onrender.com',]
 
 
 # Application definition
