@@ -27,5 +27,4 @@ urlpatterns = [
     path('', root),
     path('admin/', admin.site.urls),
     path('api/', include('home.api_urls')),
-    path("api/test/", views.test_api, name="test_api"),
 ]
