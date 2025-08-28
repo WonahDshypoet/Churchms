@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
-from . import views
 
 def root(request):
     return HttpResponsePermanentRedirect("https://churchms-site.webflow.io/")
