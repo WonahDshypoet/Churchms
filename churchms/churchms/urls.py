@@ -17,13 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from . import views
 
 def root(request):
-    return JsonResponse({"message": "Welcome to the Church Management System API."})
+    return HttpResponsePermanentRedirect("https://churchms-site.webflow.io/")
 
 
 urlpatterns = [
     path('', root),
     path('admin/', admin.site.urls),
     path('api/', include('home.api_urls')),
+    path("api/test/", views.test_api, name="test_api"),
 ]

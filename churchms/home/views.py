@@ -7,6 +7,7 @@ from .serializers import (
     RegistrationSerializer, DonationSerializer, CommunicationSerializer
 )
 from .permissions import IsAdminUserOrReadOnly, IsOwnerOrAdmin
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -54,3 +55,6 @@ class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communication.objects.all()
     serializer_class = CommunicationSerializer
 
+
+def test_api(request):
+    return JsonResponse({"message": "Hello from Django API!"})

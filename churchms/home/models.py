@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-# ======= FAMILY & MEMBER MODELS =======
+# ======= FAMILY 
 class Family(models.Model):
     family_name = models.CharField(max_length=100)
 
