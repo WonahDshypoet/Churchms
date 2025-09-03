@@ -54,7 +54,3 @@ class DonationViewSet(viewsets.ModelViewSet):
 class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communication.objects.all()
     serializer_class = CommunicationSerializer
-
-
-def test_api(request):
-    return JsonResponse({"message": "Hello from Django API!"})

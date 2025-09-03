@@ -29,3 +29,18 @@ class RegisterView(generics.CreateAPIView):
 
 # Login view is handled by SimpleJWT (TokenObtainPairView)
 
+class CustomLoginView(TokenObtainPairView):
+    """
+    Extends TokenObtainPairView to also handle form-urlencoded requests.
+    """
+    def post(self, request, *args, **kwargs):
+        # If data comes from form instead of JSON
+        if request.content_type == "application/x-www-form-urlencoded":
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            request.data._mutable = True  # make data mutable
+            request.data['username'] = username
+            request.data['password'] = password
+            request.data._mutable = False
+
+        return super().post(request, *args, **kwargs)

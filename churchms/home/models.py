@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
+from twilio.rest import Client
+from django.conf import settings
 # Create your models here.
 
 
@@ -69,8 +72,37 @@ class Communication(models.Model):
     channel = models.CharField(max_length=10, choices=CHANNEL_CHOICES)
     status = models.CharField(max_length=20, default='Sent')
 
-    def __str__(self):
-        return f"{self.channel} to {self.member}"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # save first
+        success = False  
+
+        if self.channel == "EMAIL" and self.member and self.member.email:
+            try:
+                send_mail(
+                    subject="Church Message",
+                    message=self.message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[self.member.email],
+                )
+                success = True
+            except Exception as e:
+                print("Email error:", e)
+
+        elif self.channel == "SMS" and self.member and self.member.phone:
+            try:
+                client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+                client.messages.create(
+                    body=self.message,
+                    from_=settings.TWILIO_PHONE_NUMBER,
+                    to=self.member.phone,
+                )
+                success = True
+            except Exception as e:
+                print("SMS error:", e)
+
+        self.status = "Sent" if success else "Failed"
+        super().save(update_fields=["status"])
 
 
 class CustomUser(AbstractUser):

@@ -20,7 +20,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 def root(request):
-    return HttpResponsePermanentRedirect("https://churchms-site.webflow.io/")
+    return HttpResponsePermanentRedirect("https://churchms-site.webflow.io/#learn-more")
 
 
 urlpatterns = [
