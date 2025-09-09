@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Family, Member, Event, Registration, Donation, Communication, CustomUser
+from .models import Family, Member, Event, Registration, Donation, Communication, CustomUser, Devotional
 from django.contrib.auth import get_user_model  
 
 
@@ -69,3 +69,10 @@ class CommunicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Communication
         fields = '__all__'
+        
+
+# ==== Devotional Serializer ====     
+class DevotionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Devotional
+        fields = "__all__"

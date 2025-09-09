@@ -60,7 +60,7 @@ class Donation(models.Model):
         return f"{self.amount} from {self.member or 'Anonymous'}"
 
 
-# ======= COMMUNICATION LOG =======
+# ======= COMMUNICATION LOG ======= 
 class Communication(models.Model):
     CHANNEL_CHOICES = [
         ('SMS', 'SMS'),
@@ -115,4 +115,14 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+
+class Devotional(models.Model):
+    date = models.DateField(unique=True)
+    message = models.TextField()
+    scripture = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Devotional for {self.date}"
     
