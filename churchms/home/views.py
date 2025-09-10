@@ -14,6 +14,7 @@ from django.utils.timezone import now
 from rest_framework.decorators import api_view, permission_classes
 from .message_util import send_message
 from .tasks import send_daily_devotional
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -88,3 +89,17 @@ def send_devotional_now(request):
         send_message(member, message, channel)
 
     return Response({"status": f"Sent devotional to {members.count()} members"})
+
+
+@login_required
+def dashboard(request):
+    return render(request, "dashboard.html")
+
+@login_required
+def member_dashboard(request):
+    messages = Communication.objects.filter(member__email=request.user.email).order_by("-date_sent")[:5]
+    devotional = Devotional.objects.filter(date=now().date()).first()
+    return render(request, "member_dashboard.html", {
+        "messages": messages,
+        "devotional": devotional
+    })

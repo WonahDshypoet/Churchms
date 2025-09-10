@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ChurchMS | Member Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      margin: 0;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header h2 {
+      color: #333;
+    }
+    .logout {
+      padding: 0.6rem 1rem;
+      background: #d9534f;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .logout:hover {
+      background: #c9302c;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Welcome, {{ user.username }}</h2>
+    <a href="{% url 'logout' %}" class="logout">Logout</a>
+  </header>
+
+  <div class="card">
+    <h3>Latest Messages</h3>
+    <ul>
+      {% for msg in messages %}
+        <li>{{ msg.date_sent }} - {{ msg.message }} (via {{ msg.channel }})</li>
+      {% empty %}
+        <li>No messages yet</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Today's Devotional</h3>
+    {% if devotional %}
+      <p><strong>{{ devotional.date }}</strong>: {{ devotional.message }}</p>
+    {% else %}
+      <p>No devotional available today.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
