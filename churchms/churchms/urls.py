@@ -32,4 +32,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('home.api_urls')),
     path("logout/", auth_views.LogoutView.as_view(next_page="https://churchms-site.webflow.io/#learn-more"), name="logout"),
+    path('login/', auth_views.LoginView.as_view(template_name="login.html"), name="login"),
+    
 ]
