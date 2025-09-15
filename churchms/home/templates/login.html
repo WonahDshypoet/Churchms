@@ -1,14 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login - ChurchMS</title>
+  <meta charset="utf-8"/>
+  <title>Sign in</title>
+  <meta content="Church Management System" name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="https://cdn.prod.website-files.com/688f173c549ed9021650530f/css/churchms-site.webflow.shared.97d02fc96.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign In</button>
-    </form>
+<section class="section login">
+  <div class="gradient-image"></div>
+  <div class="container-large">
+    <div class="card-item login">
+      <h1 class="heading medium">Sign in</h1>
+      <div class="spacer-40"></div>
+
+      <div class="form-block w-form">
+        <form id="loginForm" class="login-form">
+          {% csrf_token %}
+          <div class="text-box">
+            <label for="username" class="field-label">Email address</label>
+            <input class="text-input w-input" name="username" placeholder="Your email" type="email" id="username" required/>
+          </div>
+
+          <div class="text-box">
+            <label for="password" class="field-label">Password</label>
+            <input class="text-input w-input" name="password" placeholder="Your password" type="password" id="password" required/>
+          </div>
+
+          <div class="spacer-16"></div>
+          <input type="submit" class="button full-width w-button" value="Sign in"/>
+        </form>
+        <a href="{% url 'register' %}" class="text-link">Register</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const response = await fetch("/api/auth/login/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    localStorage.setItem("access_token", data.access);
+
+    // Role check via backend
+    const profile = await fetch("/api/members/me/", {
+      headers: { "Authorization": `Bearer ${data.access}` }
+    });
+
+    if (profile.ok) {
+      const user = await profile.json();
+      if (user.is_admin) {
+        window.location.href = "/admin/";
+      } else {
+        window.location.href = "/member/";
+      }
+    }
+  } else {
+    alert("Invalid credentials. Try again.");
+  }
+});
+</script>
 </body>
 </html>

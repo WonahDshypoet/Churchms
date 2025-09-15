@@ -20,6 +20,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.contrib.auth import views as auth_views
 from home.views import dashboard, member_dashboard
+from django.views.generic import TemplateView
 
 def root(request):
     return HttpResponsePermanentRedirect("https://churchms-site.webflow.io/#learn-more")
@@ -33,4 +34,5 @@ urlpatterns = [
     path('api/', include('home.api_urls')),
     path("logout/", auth_views.LogoutView.as_view(next_page="https://churchms-site.webflow.io/#learn-more"), name="logout"),
     path('login/', auth_views.LoginView.as_view(template_name="login.html"), name="login"),
+    path("register/", TemplateView.as_view(template_name="registration.html"), name="register_page"),
 ]

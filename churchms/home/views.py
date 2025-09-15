@@ -97,9 +97,4 @@ def dashboard(request):
 
 @login_required
 def member_dashboard(request):
-    messages = Communication.objects.filter(member__email=request.user.email).order_by("-date_sent")[:5]
-    devotional = Devotional.objects.filter(date=now().date()).first()
-    return render(request, "member_dashboard.html", {
-        "messages": messages,
-        "devotional": devotional
-    })
+    return render(request, "member_dashboard.html")
