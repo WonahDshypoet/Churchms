@@ -98,13 +98,22 @@ def send_devotional_now(request):
     return Response({"status": f"Sent devotional to {members.count()} members"})
 
 
-@login_required
 def dashboard(request):
     return render(request, "dashboard.html", {"user": request.user})
 
 @login_required
 def member_dashboard(request):
-    return render(request, "member_dashboard.html", {"user": request.user})
+    devotionals = Devotional.objects.order_by('-date')[:1]
+    communications = Communication.objects.order_by('-created_at')[:5]
+    donations = Donation.objects.filter(member__email=request.user.email)
+    total_donations = sum([d.amount for d in donations])
+
+    return render(request, "member_dashboard.html", {
+        "user": request.user,
+        "devotionals": devotionals,
+        "communications": communications,
+        "total_donations": total_donations,
+    })
 
 
 def register_view(request):

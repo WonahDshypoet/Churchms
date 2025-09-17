@@ -6,125 +6,46 @@
   <meta content="Church Management System Member Dashboard" name="description"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <link href="https://cdn.prod.website-files.com/688f173c549ed9021650530f/css/churchms-site.webflow.shared.97d02fc96.css" rel="stylesheet" type="text/css"/>
-  <style>
-    .dashboard-card {
-      background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 8px rgba(0,0,0,0.05);
-      margin-bottom: 24px;
-    }
-    .dashboard-section {
-      margin-top: 40px;
-    }
-    .heading {
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-  </style>
 </head>
 <body>
 <section class="section">
   <div class="container-large">
-    <h1 class="heading large">Welcome, <span id="memberName">Member</span></h1>
+    <h1 class="heading large">Welcome, {{ user.username }}</h1>
     <p>Here’s your personalized dashboard.</p>
 
     <!-- Devotional Section -->
-    <div class="dashboard-section">
-      <div class="dashboard-card">
-        <h2 class="heading medium">📖 Today’s Devotional</h2>
-        <p id="devotionalText">Loading devotional...</p>
-      </div>
+    <div class="dashboard-card">
+      <h2>📖 Today’s Devotional</h2>
+      {% if devotionals %}
+        <p>{{ devotionals.0.message }}</p>
+      {% else %}
+        <p>No devotional available today.</p>
+      {% endif %}
     </div>
 
     <!-- Communications Section -->
-    <div class="dashboard-section">
-      <div class="dashboard-card">
-        <h2 class="heading medium">💬 Recent Messages</h2>
-        <ul id="messagesList">
-          <li>Loading messages...</li>
+    <div class="dashboard-card">
+      <h2>💬 Recent Messages</h2>
+      {% if communications %}
+        <ul>
+          {% for c in communications|slice:":5" %}
+            <li>{{ c.channel }}: {{ c.message }}</li>
+          {% endfor %}
         </ul>
-      </div>
+      {% else %}
+        <p>No recent messages</p>
+      {% endif %}
     </div>
 
     <!-- Donations Section -->
-    <div class="dashboard-section">
-      <div class="dashboard-card">
-        <h2 class="heading medium">💒 Donations</h2>
-        <p id="donationsSummary">Loading donation summary...</p>
-      </div>
+    <div class="dashboard-card">
+      <h2>💒 Donations</h2>
+      <p>You have contributed a total of ${{ total_donations }}</p>
     </div>
 
     <!-- Back Button -->
-    <div class="dashboard-section">
-      <a href="https://churchms-site.webflow.io" class="button w-button">⬅ Back to Homepage</a>
-    </div>
+    <a href="https://churchms-site.webflow.io" class="button w-button">⬅ Back to Homepage</a>
   </div>
 </section>
-
-<script>
-async function loadDashboard() {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    alert("Please log in first.");
-    window.location.href = "/login/";
-    return;
-  }
-
-  // Fetch user profile
-  const profileRes = await fetch("/api/members/me/", {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  if (profileRes.ok) {
-    const user = await profileRes.json();
-    document.getElementById("memberName").textContent = user.first_name || user.username;
-  }
-
-  // Fetch devotional
-  const devoRes = await fetch("/api/devotionals/", {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  if (devoRes.ok) {
-    const devotionals = await devoRes.json();
-    if (devotionals.length > 0) {
-      document.getElementById("devotionalText").textContent = devotionals[0].message;
-    } else {
-      document.getElementById("devotionalText").textContent = "No devotional available today.";
-    }
-  }
-
-  // Fetch messages
-  const commRes = await fetch("/api/communications/", {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  const messagesList = document.getElementById("messagesList");
-  messagesList.innerHTML = "";
-  if (commRes.ok) {
-    const comms = await commRes.json();
-    if (comms.length > 0) {
-      comms.slice(0, 5).forEach(c => {
-        const li = document.createElement("li");
-        li.textContent = `${c.channel}: ${c.message}`;
-        messagesList.appendChild(li);
-      });
-    } else {
-      messagesList.innerHTML = "<li>No recent messages</li>";
-    }
-  }
-
-  // Fetch donations
-  const donRes = await fetch("/api/donations/", {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  if (donRes.ok) {
-    const donations = await donRes.json();
-    const total = donations.reduce((sum, d) => sum + parseFloat(d.amount), 0);
-    document.getElementById("donationsSummary").textContent = 
-      `You have contributed a total of $${total.toFixed(2)}.`;
-  }
-}
-
-loadDashboard();
-</script>
 </body>
 </html>
