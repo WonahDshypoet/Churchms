@@ -179,7 +179,6 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 
 LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "https://churchms-site.webflow.io/#learn-more"
 
  

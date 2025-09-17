@@ -12,6 +12,7 @@ from .views import (
 from .auth_views import RegisterView
 from django.utils.timezone import now
 from .message_util import send_message
+from .auth_views import CurrentUserView
 
 
 router = DefaultRouter()
@@ -30,4 +31,5 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('devotionals/send-now/', send_devotional_now, name='send_devotional_now'),
     path("auth/register/", RegisterView.as_view(), name="register"),
+    path("auth/me/", CurrentUserView.as_view(), name="auth_me"),
 ]

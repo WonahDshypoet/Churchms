@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from .models import Family, Member, Event, Registration, Donation, Communication, Devotional
@@ -15,6 +15,13 @@ from rest_framework.decorators import api_view, permission_classes
 from .message_util import send_message
 from .tasks import send_daily_devotional
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
+from django.contrib.auth.views import LoginView
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.views import View
 # Create your views here.
 
 
@@ -93,8 +100,31 @@ def send_devotional_now(request):
 
 @login_required
 def dashboard(request):
-    return render(request, "dashboard.html")
+    return render(request, "dashboard.html", {"user": request.user})
 
 @login_required
 def member_dashboard(request):
-    return render(request, "member_dashboard.html")
+    return render(request, "member_dashboard.html", {"user": request.user})
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Registration successful! You can now log in.")
+            return redirect("login")  # go to login page
+        else:
+            messages.error(request, "❌ Please correct the errors below.")
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, "registration.html", {"form": form})
+
+class RoleBasedLoginView(LoginView):
+    template_name = "login.html"
+
+    def get_success_url(self):
+        return "/dashboard/"
+    
+        
