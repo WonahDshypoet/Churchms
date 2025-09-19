@@ -104,7 +104,7 @@ def dashboard(request):
 @login_required
 def member_dashboard(request):
     devotionals = Devotional.objects.order_by('-date')[:1]
-    communications = Communication.objects.order_by('-created_at')[:5]
+    communications = Communication.objects.order_by("-date_sent")[:5]
     donations = Donation.objects.filter(member__email=request.user.email)
     total_donations = sum([d.amount for d in donations])
 
